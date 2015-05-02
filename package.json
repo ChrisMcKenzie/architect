@@ -1,0 +1,30 @@
+{
+  "name": "architect",
+  "version": "0.0.1",
+  "description": "A library to convert API Blueprint AST to Markdown built in js",
+  "main": "architect.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChrisMcKenzie/architect.git"
+  },
+  "keywords": [
+    "api",
+    "blueprint",
+    "ast",
+    "markdown",
+    "parser",
+    "transpiler"
+  ],
+  "author": "ChrisMcKenzie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ChrisMcKenzie/architect/issues"
+  },
+  "homepage": "https://github.com/ChrisMcKenzie/architect",
+  "devDependencies": {
+    "mocha": "^2.2.4"
+  }
+}
