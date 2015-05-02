@@ -73,7 +73,6 @@ module.exports = Architect = (function(){
       })
     })
 
-    console.log(buffer)
     return buffer;
   }
 
@@ -106,39 +105,41 @@ module.exports = Architect = (function(){
     return buffer
   }
 
-  Architect.parse = function(input) {
-    input = input.ast;
-    if(_supported_versions.indexOf(input._version) <= -1){
-      throw new Error('Architect currently supports Version 3.0 of Api Blueprint AST');
-    }
-
-    this.buffer = [];
-
+  _parseBlueprint = function(ast){
+    var buffer = [];
     // Write Metadata Section:
     // [Details](https://github.com/apiaryio/api-blueprint/blob/master/API%20Blueprint%20Specification.md#8-metadata-section)
-    if(input.hasOwnProperty('metadata')){
-      // console.log('META: ' + JSON.stringify(input.metadata))
-      for(var i = 0; i < input.metadata.length; i++){
-        var item = input.metadata[i];
+    if(ast.hasOwnProperty('metadata')){
+      for(var i = 0; i < ast.metadata.length; i++){
+        var item = ast.metadata[i];
         if(item.name && item.value) {
-          this.buffer.push(_print(item.name + ':', item.value));
+          buffer.push(_print(item.name + ':', item.value));
         }
       }
     }
 
-    if(input.name) {
-      this.buffer.push(_print(_tokens.heading[1], input.name));
+    if(ast.name) {
+      buffer.push(_print(_tokens.heading[1], ast.name));
     }
 
-    if(input.description){
-      this.buffer.push(_print(input.description))
+    if(ast.description){
+      buffer.push(_print(ast.description))
     }
 
-    if(input.content){
-      this.buffer.push(_parseContent(input.content))
+    if(ast.content){
+      buffer.push(_parseContent(ast.content))
     }
 
-    return this.buffer.join('\n')
+    return buffer.join('\n')
+  }
+
+  Architect.parse = function(input) {
+    ast = input.ast;
+    if(_supported_versions.indexOf(ast._version) <= -1){
+      throw new Error('Architect does not support version ' + ast._version +  ' of Api Blueprint AST');
+    }
+
+    return _parseBlueprint(ast);
   }
 
   return Architect;

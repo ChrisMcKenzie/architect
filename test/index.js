@@ -55,7 +55,7 @@ describe('Parse', function(){
              });
            },
            Error,
-           'Architect currently supports Version 3.0 of Api Blueprint AST'
+           'Architect does not support version 2.0 of Api Blueprint AST'
          );
       });
 
@@ -66,7 +66,7 @@ describe('Parse', function(){
             _version: '3.0'
           }
         });
-      }, 'Architect currently supports Version 3.0 of Api Blueprint AST');
+      }, 'Architect does not support version 3.0 of Api Blueprint AST');
     })
   });
   describe('#fields', function(){

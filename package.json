@@ -4,7 +4,7 @@
   "description": "A library to convert API Blueprint AST to Markdown built in js",
   "main": "architect.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
