@@ -3,10 +3,14 @@ var Architect;
 module.exports = Architect = (function(){
   var _print, 
       _supported_versions, 
-      _tokens, 
+      _tokens,
+      _parseBlueprint,
       _parseContent, 
       _parseElement,
-      _parseResource;
+      _parseResource,
+      _parseResponse,
+      _parseExample,
+      _parseAsset;
 
   // For the sake of cleanlyness for a first version this
   // only supports Version: 3.0 of the API Blueprint AST spec
@@ -33,13 +37,32 @@ module.exports = Architect = (function(){
     return frame.join('');
   }
 
+  _parseAsset = function(asset) {
+    return _print('     ', asset.content) 
+  }
+
+  _parseResponse = function(response) {
+    buffer = _print(
+      buffer + '+',
+      'Response',
+      response.name,
+      _wrap('()', response.headers[0].value) + '\n    \n',
+      response.description
+    );
+
+    buffer += _parseContent(response.content)
+  }
+
+  _parseExample = function(example){
+    example.responses.forEach(_parseResponse);
+  }
+
   _parseResource = function(res, depth) {
     buffer = _tokens.heading[1 + (depth || 0)];
     // header section:
     if(res.uriTemplate != '') {
       buffer = _print(
-        buffer,
-        res.name !== '' ? res.name : '\b',
+        buffer + (res.name !== '' ? res.name : ''),
         res.name !== '' ?
           _wrap('[]', res.uriTemplate)
             : res.uriTemplate
@@ -49,29 +72,16 @@ module.exports = Architect = (function(){
     res.actions.forEach(function(action){
       // Heading
       buffer = _print(
-        buffer, 
-        '\n',
+        buffer + '\n',
         _tokens.heading[2+(depth || 0)],
-        action.method !== '' ? action.method : '\b',
-        '\n'
+        (action.method !== '' ? action.method : '') + '\n'
       );
 
       // Examples
-      action.examples.forEach(function(example){
-        example.responses.forEach(function(response){
-          // Response Heading
-          buffer = _print(
-            buffer,
-            '+',
-            'Response',
-            response.name,
-            _wrap('()', response.headers[0].value),
-            '\n\t',
-            response.description
-          );
-        })
-      })
-    })
+      action.examples.forEach(_parseExample);
+    });
+
+    console.log(buffer)
 
     return buffer;
   }
@@ -83,6 +93,9 @@ module.exports = Architect = (function(){
         break;
       case 'resource':
         buffer = _parseResource(el)
+        break;
+      case 'asset':
+        buffer = _parseAsset(el)
         break;
     }
 
@@ -99,7 +112,7 @@ module.exports = Architect = (function(){
     } else if(typeof content == 'string') {
       buffer = _print(content);
     } else if(typeof content == 'object') {
-      buffer = this._parseElement(content);
+      buffer = _parseElement(content);
     }
 
     return buffer
